@@ -1,0 +1,60 @@
+from PyQt5.QtWidgets import QDialog, QVBoxLayout, QLabel, QLineEdit, QDialogButtonBox, QComboBox
+from functions.sales_functions import get_all_inventory_items
+
+class EditSaleDialog(QDialog):
+    def __init__(self, item_id, quantity):
+        super().__init__()
+
+        # Define the window properties
+        self.setWindowTitle("Edit Sale")
+
+        # Define the layout
+        self.layout = QVBoxLayout()
+
+        # Create the labels, line edits, and combo box
+        self.itemLabel = QLabel("Product Name:")
+        self.itemComboBox = QComboBox()
+        
+        self.quantityLabel = QLabel("Quantity Sold:")
+        self.quantityLineEdit = QLineEdit(str(quantity))
+        
+        # Load product names into the combo box
+        self.load_product_names()
+
+        # Set the current selected item in the combo box to match the item_id
+        index = self.itemComboBox.findData(item_id)
+        if index != -1:
+            self.itemComboBox.setCurrentIndex(index)
+
+        # Add labels, combo box, and line edits to layout
+        self.layout.addWidget(self.itemLabel)
+        self.layout.addWidget(self.itemComboBox)
+        self.layout.addWidget(self.quantityLabel)
+        self.layout.addWidget(self.quantityLineEdit)
+
+        # Create the button box
+        self.buttonBox = QDialogButtonBox(QDialogButtonBox.Ok | QDialogButtonBox.Cancel)
+
+        # Connect the signals
+        self.buttonBox.accepted.connect(self.accept)
+        self.buttonBox.rejected.connect(self.reject)
+
+        # Add button box to layout
+        self.layout.addWidget(self.buttonBox)
+
+        # Set the layout
+        self.setLayout(self.layout)
+
+    def load_product_names(self):
+        """Populate the combo box with product names."""
+        inventory_items = get_all_inventory_items()
+        for item in inventory_items:
+            item_id, product_name, _ = item
+            self.itemComboBox.addItem(product_name, item_id)
+
+    def get_input_values(self):
+        """Retrieve the selected product and entered quantity."""
+        return {
+            "item_id": self.itemComboBox.currentData(),
+            "quantity": self.quantityLineEdit.text()
+        }
