@@ -13,6 +13,9 @@ class MainWindow(QMainWindow):
         super().__init__()
 
         self.balance_updated.connect(self.update_balance)
+        self.balance_updated.connect(inventory_management.load_data)
+        self.balance_updated.connect(sales_management.load_data)
+        self.balance_updated.connect(expense_tracking.load_data)
 
         self.m_mousePressed = False
         self.m_mousePos = None
@@ -25,7 +28,7 @@ class MainWindow(QMainWindow):
         self.profit_calculation = profit_calculation
 
         # Set window properties
-        self.setWindowTitle("Beauty Sales Management System")
+        self.setWindowTitle("Sales Management System")
         self.setGeometry(100, 100, 400, 600)
 
         # Set a more modern style
@@ -140,6 +143,7 @@ class MainWindow(QMainWindow):
             new_balance = dialog.get_balance()
             set_balance(new_balance)
             self.update_balance()
+            self.balance_updated.emit()
 
 
 if __name__ == "__main__":
