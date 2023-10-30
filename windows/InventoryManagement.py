@@ -1,38 +1,21 @@
-from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout, QPushButton, QTableWidget, QTableWidgetItem, QDialog
+from PyQt5.QtWidgets import QApplication, QTableWidgetItem, QDialog
 from PyQt5.QtCore import Qt
 import sys
 from dialogs import AddItemDialog, EditItemDialog, DeleteItemDialog
 from functions.inventory_functions import get_all_items, add_item, update_item, delete_item
+from functions.balance_functions import update_balance, get_balance
+from windows.InventoryManagementUI import InventoryManagementUI
 
-class InventoryManagement(QWidget):
+class InventoryManagement(InventoryManagementUI):
     def __init__(self):
         super().__init__()
+        self.setup_connections()
+        self.load_data()
 
-        self.setWindowTitle("Inventory Management")
-        self.setGeometry(100, 100, 1000, 600)
-
-        self.layout = QVBoxLayout()
-
-        self.table = QTableWidget()
-        self.table.setColumnCount(6)
-        self.table.setHorizontalHeaderLabels(["Item ID", "Item Name", "Quantity", "Cost Price", "Selling Price", "Profit"])
-
-        self.addButton = QPushButton("Add Item")
-        self.editButton = QPushButton("Edit Item")
-        self.deleteButton = QPushButton("Delete Item")
-
+    def setup_connections(self):
         self.addButton.clicked.connect(self.add_item)
         self.editButton.clicked.connect(self.edit_item)
         self.deleteButton.clicked.connect(self.delete_item)
-
-        self.layout.addWidget(self.table)
-        self.layout.addWidget(self.addButton)
-        self.layout.addWidget(self.editButton)
-        self.layout.addWidget(self.deleteButton)
-
-        self.setLayout(self.layout)
-
-        self.load_data()
 
     def add_item(self):
         dialog = AddItemDialog()
@@ -46,6 +29,8 @@ class InventoryManagement(QWidget):
             selling_price = data['selling_price']
 
             add_item(item_name, quantity, cost_price, selling_price)
+            update_balance(-cost_price * quantity)  # Deduct item cost from the balance
+            self.main_window.balance_updated.emit()
 
         self.load_data()
 
@@ -77,6 +62,13 @@ class InventoryManagement(QWidget):
 
                 update_item(item_id, new_item_name, new_quantity, new_cost_price, new_selling_price)
 
+                # Adjusting balance:
+                original_cost = float(item_cost_price)
+                new_cost = float(new_cost_price)
+                cost_difference = new_cost - original_cost
+                update_balance(-cost_difference * int(new_quantity))
+                self.main_window.balance_updated.emit()
+
             self.load_data()
 
 
@@ -91,14 +83,18 @@ class InventoryManagement(QWidget):
             result = dialog.exec_()
 
             if result == QDialog.Accepted:
+                item_cost = float(self.table.item(selected_row, 3).text())
+                item_quantity = int(self.table.item(selected_row, 2).text())
                 delete_item(item_id)
+                update_balance(item_cost * item_quantity)  # Add item cost back to the balance
+                self.main_window.balance_updated.emit()
 
             self.load_data()
 
     def load_data(self):
         self.table.setRowCount(0)
         data = get_all_items()
-
+        self.balanceLabel.setText(f"Balance: {get_balance():.2f} LYD")
         for row_number, row_data in enumerate(data):
             self.table.insertRow(row_number)
         

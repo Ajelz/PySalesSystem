@@ -1,15 +1,13 @@
-from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout, QPushButton, QLabel, QHBoxLayout
+from PyQt5.QtWidgets import QWidget, QVBoxLayout, QPushButton, QTableWidget, QLabel, QHBoxLayout
 from PyQt5.QtCore import Qt
-from functions.profit_functions import calculate_profit
-import sys
 
-class ProfitCalculation(QWidget):
+class ExpenseTrackingUI(QWidget):
     def __init__(self):
         super().__init__()
 
         # Define the window properties
-        self.setWindowTitle("Profit Calculation")
-        self.setGeometry(100, 100, 400, 200)
+        self.setWindowTitle("Expense Tracking")
+        self.setGeometry(100, 100, 800, 600)
         self.setWindowFlags(Qt.FramelessWindowHint)  # To make the window frameless
 
         self.m_mousePressed = False
@@ -18,37 +16,44 @@ class ProfitCalculation(QWidget):
 
         # Define layout
         self.layout = QVBoxLayout()
-        self.topLayout = QHBoxLayout()  # Top bar layout for close, minimize buttons
+        self.topLayout = QHBoxLayout()  # Top bar layout for close, minimize, maximize buttons
 
         # Create and style buttons
         self.create_buttons()
 
         # Title label initialization
-        self.titleLabel = QLabel("Profit")
+        self.titleLabel = QLabel("Expenses")
         title_style = """
         QLabel {
             color: #3A3A3A;
-            font-size: 24px;
+            font-size: 32px;
             font-weight: bold;
         }
         """
         self.titleLabel.setStyleSheet(title_style)
         self.titleLabel.setAlignment(Qt.AlignCenter)  # Center alignment for the label
 
-        # Create the label for profit display
-        self.profitLabel = QLabel()
-        self.profitLabel.setAlignment(Qt.AlignCenter)
-        self.profitLabel.setStyleSheet("color: green; font-size: 24px; font-weight: bold;")  # New styling for profitLabel
+        # Balance Display
+        self.balanceLabel = QLabel()  # Display the balance on GUI
+        self.balanceLabel.setStyleSheet("color: green; font-size: 24px; font-weight: bold;")
+        self.balanceLabel.setAlignment(Qt.AlignCenter)  # Center alignment for the label
+
+        # Create the table
+        self.table = QTableWidget()
+        self.table.setColumnCount(3)
+        self.table.setHorizontalHeaderLabels(["Expense ID", "Expense Type", "Expense Amount"])
 
         # Add widgets to layout in correct order
         self.layout.addLayout(self.topLayout)
-        self.layout.addWidget(self.titleLabel)
-        self.layout.addWidget(self.profitLabel)
-        self.layout.addWidget(self.refreshButton)
+        self.layout.insertWidget(1, self.titleLabel)
+        self.layout.addWidget(self.balanceLabel)
+        self.layout.addWidget(self.table)
+        self.layout.addWidget(self.addButton)
+        self.layout.addWidget(self.editButton)
+        self.layout.addWidget(self.deleteButton)
 
         # Set the layout
         self.setLayout(self.layout)
-        self.refresh_profit()
 
     def mousePressEvent(self, event):
         if event.button() == Qt.LeftButton:
@@ -90,35 +95,38 @@ class ProfitCalculation(QWidget):
         }
         """
 
-        # Close, Minimize buttons with fixed size
+        # Close, Minimize, Maximize buttons with fixed size
         self.btnClose = QPushButton("X")
         self.btnMinimize = QPushButton("-")
+        self.btnMaximize = QPushButton("[]")
         self.btnClose.setFixedSize(30, 30)
         self.btnMinimize.setFixedSize(30, 30)
+        self.btnMaximize.setFixedSize(30, 30)
         self.btnClose.setStyleSheet(btn_style)
         self.btnMinimize.setStyleSheet(btn_style)
+        self.btnMaximize.setStyleSheet(btn_style)
         self.btnClose.clicked.connect(self.close)
         self.btnMinimize.clicked.connect(self.showMinimized)
+        self.btnMaximize.clicked.connect(self.toggleMaximize)
 
         # Positioning buttons on the top left and adding stretch to push them to the left
         self.topLayout.addWidget(self.btnClose)
         self.topLayout.addWidget(self.btnMinimize)
+        self.topLayout.addWidget(self.btnMaximize)
         self.topLayout.addStretch(1)
 
-        # Existing button with new style
-        self.refreshButton = QPushButton("Refresh")
-        self.refreshButton.setStyleSheet(btn_style)
-        self.refreshButton.clicked.connect(self.refresh_profit)
+        # Existing buttons with new style
+        self.addButton = QPushButton("Add Expense")
+        self.editButton = QPushButton("Edit Expense")
+        self.deleteButton = QPushButton("Delete Expense")
 
-    def refresh_profit(self):
-        profit = calculate_profit()
-        self.profitLabel.setText(f"Current Profit: {profit:.2f} LYD")
+        # Apply button styles
+        self.addButton.setStyleSheet(btn_style)
+        self.editButton.setStyleSheet(btn_style)
+        self.deleteButton.setStyleSheet(btn_style)
 
-
-if __name__ == "__main__":
-    app = QApplication(sys.argv)
-
-    profit_calculation = ProfitCalculation()
-    profit_calculation.show()
-
-    sys.exit(app.exec_())
+    def toggleMaximize(self):
+        if self.windowState() & Qt.WindowMaximized:
+            self.showNormal()
+        else:
+            self.showMaximized()

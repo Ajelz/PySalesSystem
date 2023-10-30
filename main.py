@@ -18,6 +18,13 @@ def main():
     # Create the main window
     main_window = MainWindow(inventory_management, sales_management, expense_tracking, profit_calculation)
 
+    # Link the main window to the inventory_management
+    inventory_management.main_window = main_window
+    # Link the main window to the inventory_management
+    SalesManagement.main_window = main_window
+    # Link the main window to the inventory_management
+    ExpenseTracking.main_window = main_window
+
     # Show the main window
     main_window.show()
 
