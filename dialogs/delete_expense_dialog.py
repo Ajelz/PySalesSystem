@@ -1,7 +1,7 @@
 from PyQt5.QtWidgets import QDialog, QVBoxLayout, QLabel, QDialogButtonBox
 
 class DeleteExpenseDialog(QDialog):
-    def __init__(self, expense_type, expense_amount):
+    def __init__(self, expense_id, expense_type):
         super().__init__()
 
         # Define the window properties
@@ -10,10 +10,10 @@ class DeleteExpenseDialog(QDialog):
         # Define the layout
         self.layout = QVBoxLayout()
 
-        # Create the labels and line edits
-        self.warningLabel = QLabel(f"Are you sure you want to delete the expense '{expense_type}' of amount {expense_amount}? This action cannot be undone.")
+        # Create the warning label
+        self.warningLabel = QLabel(f"Are you sure you want to delete the expense '{expense_type}' with ID {expense_id}? This action cannot be undone.")
 
-        # Add widgets to layout
+        # Add the label to the layout
         self.layout.addWidget(self.warningLabel)
 
         # Create the button box

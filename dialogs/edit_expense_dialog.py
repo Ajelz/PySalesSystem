@@ -1,30 +1,25 @@
-from PyQt5.QtWidgets import QDialog, QVBoxLayout, QLabel, QLineEdit, QDialogButtonBox
+from PyQt5.QtWidgets import QDialog, QFormLayout, QLabel, QLineEdit, QDialogButtonBox
 
 class EditExpenseDialog(QDialog):
-    def __init__(self, current_type, current_amount):
+    def __init__(self, expense_id, current_type, current_amount):
         super().__init__()
+
+        # Store expense_id for later use
+        self.expense_id = expense_id
 
         # Define the window properties
         self.setWindowTitle("Edit Expense")
 
-        # Define the layout
-        self.layout = QVBoxLayout()
+        # Define the form layout
+        self.layout = QFormLayout()
 
-        # Create the labels and line edits
-        self.typeLabel = QLabel("Expense Type:")
-        self.typeEdit = QLineEdit()
-        self.amountLabel = QLabel("Expense Amount:")
-        self.amountEdit = QLineEdit()
+        # Create the form fields and pre-fill them with data
+        self.typeField = QLineEdit(current_type)
+        self.amountField = QLineEdit(str(current_amount))
 
-        # Set the current values
-        self.typeEdit.setText(current_type)
-        self.amountEdit.setText(str(current_amount))
-
-        # Add widgets to layout
-        self.layout.addWidget(self.typeLabel)
-        self.layout.addWidget(self.typeEdit)
-        self.layout.addWidget(self.amountLabel)
-        self.layout.addWidget(self.amountEdit)
+        # Add form fields to layout
+        self.layout.addRow(QLabel("Expense Type"), self.typeField)
+        self.layout.addRow(QLabel("Expense Amount"), self.amountField)
 
         # Create the button box
         self.buttonBox = QDialogButtonBox(QDialogButtonBox.Ok | QDialogButtonBox.Cancel)
@@ -34,11 +29,14 @@ class EditExpenseDialog(QDialog):
         self.buttonBox.rejected.connect(self.reject)
 
         # Add button box to layout
-        self.layout.addWidget(self.buttonBox)
+        self.layout.addRow(self.buttonBox)
 
         # Set the layout
         self.setLayout(self.layout)
 
-    def get_values(self):
-        # This function is used to get the values entered by the user
-        return self.typeEdit.text(), self.amountEdit.text()
+    def get_data(self):
+        return {
+            'expense_id': self.expense_id,
+            'type': self.typeField.text(),
+            'amount': float(self.amountField.text())
+        }

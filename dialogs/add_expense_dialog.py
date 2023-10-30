@@ -37,4 +37,15 @@ class AddExpenseDialog(QDialog):
 
     def get_values(self):
         # This function is used to get the values entered by the user
-        return self.typeEdit.text(), self.amountEdit.text()
+        expense_type = self.typeEdit.text().strip()  # Trim any extra spaces
+        expense_amount = self.amountEdit.text().strip()
+
+        # Validate the expense amount to ensure it's a number
+        try:
+            float(expense_amount)  # Check if expense_amount can be converted to float
+        except ValueError:
+            # Handle invalid number format
+            # You can show an error message to the user here
+            return None, None  # Return None to indicate invalid data
+
+        return expense_type, expense_amount
