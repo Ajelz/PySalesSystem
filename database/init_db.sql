@@ -1,8 +1,17 @@
 -- file: init_db.sql
 
-CREATE DATABASE IF NOT EXISTS BeautySalesManagement;
+CREATE DATABASE IF NOT EXISTS PySalesManagement;
 
-USE BeautySalesManagement;
+USE PySalesManagement;
+
+-- Balance Table
+CREATE TABLE balance (
+    id INT AUTO_INCREMENT,
+    current_balance DECIMAL(10, 2) NOT NULL,
+    PRIMARY KEY (id)
+);
+
+INSERT INTO balance (current_balance) VALUES (0.00);
 
 -- Inventory Table
 CREATE TABLE IF NOT EXISTS Inventory (
@@ -31,9 +40,3 @@ CREATE TABLE IF NOT EXISTS Expenses (
     PRIMARY KEY (ExpenseID)
 );
 
--- Balance Table
-CREATE TABLE IF NOT EXISTS balance (
-    id INT AUTO_INCREMENT,
-    current_balance DECIMAL(10, 2) NOT NULL,
-    PRIMARY KEY (id)
-);

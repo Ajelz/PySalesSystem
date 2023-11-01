@@ -1,0 +1,5 @@
+[MYSQL]
+host = "localhost"
+user = "root"
+password = "Aj12243618@"
+database = "PySalesManagement"
