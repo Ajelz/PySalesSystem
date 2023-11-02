@@ -53,7 +53,7 @@ python main.py
 ### System Windows
 
 - **Main Window**: The central hub of the application where you can navigate to different functionalities.
-  <img src="./resources/images/mainwindow.png" width="70%" alt="Main Window">
+  <img src="./resources/images/mainwindow.png" width="40%" alt="Main Window">
 
 - **Inventory Window**: Dedicated to managing product stock levels, with features to add, edit, and delete inventory items.
   ![Inventory Window](./resources/images/inventory.png)
