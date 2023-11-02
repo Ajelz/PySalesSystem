@@ -53,19 +53,19 @@ python main.py
 ### System Windows
 
 - **Main Window**: The central hub of the application where you can navigate to different functionalities.
-  ![Main Window](PySalesSystem/resources/images/mainwindow.png)
+  ![Main Window](./resources/images/mainwindow.png)
 
 - **Inventory Window**: Dedicated to managing product stock levels, with features to add, edit, and delete inventory items.
-  ![Inventory Window](PySalesSystem/resources/images/inventory.png)
+  ![Inventory Window](./resources/images/inventory.png)
 
 - **Sales Window**: Focuses on the creation and management of sales records and transactions.
-  ![Sales Window](PySalesSystem/resources/images/sales.png)
+  ![Sales Window](./resources/images/sales.png)
 
 - **Expense Window**: Allows for the tracking and managing of business expenses.
-  ![Expense Window](PySalesSystem/resources/images/expenses.png)
+  ![Expense Window](./resources/images/expenses.png)
 
 - **Profit Window**: Calculates and displays profit based on income from sales and outgoing expenses.
-  ![Profit Window](PySalesSystem/resources/images/profit.png)
+  ![Profit Window](./resources/images/profit.png)
 
 ## Contributing
 
